@@ -3,40 +3,6 @@ TokenBot1 = "5831647116:AAHDf0kOEPaEBZk5-W05gQZueSFuyzsdDDA"
 bot = telebot.TeleBot(TokenBot1)
 mydb = mysql.connector.connect(database='glpi', host='localhost', user='glpi', password='123')
 
-''' bot.delete_webhook()
-é usada em bots do Telegram para desativar o webhook previamente configurado. Um webhook é uma forma de receber atualizações em tempo real do Telegram sempre que um evento ocorre em uma conversa com o bot, como quando um usuário envia uma mensagem.
-
-Quando um webhook está ativo, o Telegram envia automaticamente as atualizações para o URL especificado no webhook, em vez de você ter que verificar constantemente o servidor do Telegram em busca de novas mensagens. Isso pode ser útil em cenários em que você deseja que seu bot responda instantaneamente às mensagens dos usuários.
-
-No entanto, há situações em que você pode querer desativar o webhook. Por exemplo:
-
-Depuração e teste: Durante o desenvolvimento de um bot, você pode querer desativar o webhook temporariamente para facilitar o teste e a depuração do código do bot sem que as atualizações sejam enviadas automaticamente para o seu servidor.
-
-Mudança de abordagem: Se você estava usando um webhook e decide mudar para um método de polling (verificação periódica das atualizações) para receber mensagens, você deve desativar o webhook.
-
-Manutenção do servidor: Em alguns casos, você pode precisar desativar o webhook temporariamente para manutenção do servidor onde o bot está hospedado.
-
-Para desativar o webhook e voltar a usar o método de polling para receber mensagens, você pode chamar a função bot.delete_webhook().
-
-Exemplo de uso:
-
-python
-Copy code
-
-import telebot
-
-# Inicialize o bot
-bot = telebot.TeleBot("TOKEN_DO_SEU_BOT")
-
-# Desative o webhook
-bot.delete_webhook()
-
-# Resto do seu código para configurar a interação com os usuários usando polling
-bot.infinity_polling()
-Lembre-se de que, após desativar o webhook, você precisará usar um loop de polling, como bot.infinity_polling(), para verificar e responder às mensagens dos usuários.
-
-
-'''
 @bot.message_handler(commands=['Ajuda']) # comando que chama a função abaixo"
 def ajuda(message):
     print('Menu ajuda!...')

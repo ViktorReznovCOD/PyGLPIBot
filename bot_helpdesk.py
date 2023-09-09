@@ -1,7 +1,7 @@
 import telebot, mysql.connector, time
 TokenBot1 = "5831647116:AAHDf0kOEPaEBZk5-W05gQZueSFuyzsdDDA"
 bot = telebot.TeleBot(TokenBot1)
-mydb = mysql.connector.connect(database='glpi', host='localhost', user='glpi', password='123')
+mydb = mysql.connector.connect(database='glpi', host='localhost', user='glpi', password='glpi')
 
 @bot.message_handler(commands=['Ajuda']) # comando que chama a função abaixo"
 def ajuda(message):
@@ -47,16 +47,24 @@ def Meus_chamados(message):
             bot.reply_to(message,f'{resultado[i]}')
             lista = []
             lista.append(resultado[:])
-@bot.message_handler(func=lambda message:True) # comando que chama a função abaixo respondendo toda e qualquer chamada.
+
+@bot.message_handler(func=lambda message:True if message.content_type == 'contact' else True) # comando que chama a função abaixo respondendo toda e qualquer chamada + compartilhamento de contato
 def mensagemgeral(message):
     print(f'Nome do usuário que interagiu: ', message.from_user.first_name)
     firstname = message.from_user.first_name #capturando primeiro nome do user no chat
     lastname = message.from_user.last_name
     nomeuser = (f'{firstname}'+f' {lastname}')
+    if message.content_type == 'contact':
+        print(f'''O numero compartilhado é: {message.contact.phone_number}''')
+        bot.reply_to(message, f'''🤖 Parece que você compartilhou seu contato... Deixa eu ver se você já está em nosso cadastro.... ''')
     bot.reply_to(message,f"""
         Olá {nomeuser}, tudo bem? escolha uma das opções abaixo e toque na desejada:
         [⁉️] /Ajuda: Opções de ajuda ao usuário.
         [➕] /Abrir_chamado: Para abrir um novo chamado
         [👀] /Meus_chamados: Listar chamados abertos
-        """)    
+        """)
+@bot.message_handler(content_types=['contact'])
+def captura_contato(message):
+    print(message.contact.phone_number)
+    return message.contact.phone_number
 bot.infinity_polling()

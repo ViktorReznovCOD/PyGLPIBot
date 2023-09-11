@@ -3,17 +3,23 @@ from telebot import types
 TokenBot1 = "5831647116:AAHDf0kOEPaEBZk5-W05gQZueSFuyzsdDDA"
 bot = telebot.TeleBot(TokenBot1)
 mydb = mysql.connector.connect(database='glpi', host='localhost', user='glpi', password='123')
+# Crie um comando ou função que será acionado quando o botão for pressionado
+@bot.message_handler(commands=['share'])
+def start(message):
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    button = telebot.types.KeyboardButton('Compartilhar Contato', request_contact=True)
+    markup.add(button)
 
-@bot.message_handler(commands=['start'])
-def register(message):
-    keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    reg_button = types.KeyboardButton(text="Share your phone number", request_contact=True)
-    keyboard.add(reg_button)
-    response = bot.send_message(message.chat.id, 
-                                "You should share your phone number", 
-                                reply_markup=keyboard)
-    print(response.contact)  # response.contact = None here
+    bot.send_message(message.chat.id, "Olá! Clique no botão abaixo para compartilhar seu contato:", reply_markup=markup)
 
-if __name__ == '__main__':
-    bot.polling(none_stop=True)
+# Defina um manipulador para lidar com o contato compartilhado pelos usuários
+@bot.message_handler(content_types=['contact'])
+def handle_contact(message):
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+    user_contact = message.contact.phone_number
 
+    bot.send_message(user_id, f"Obrigado, {user_name}! Seu contato ({user_contact}) foi compartilhado com o bot com sucesso.")
+
+# Inicie o bot
+bot.polling()
